@@ -101,7 +101,7 @@ a {
   border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
   border-radius: 0;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(24px);
   box-shadow: var(--shadow);
 }
 
@@ -1674,26 +1674,34 @@ html[data-theme='default'] .theme-toggle {
 }
 
 html[data-theme='default'] .theme-toggle.is-enter {
-  --enter-viking-cut: 12px;
-  --enter-viking-cut-inner: 8px;
+  --enter-viking-radius: 12px;
+  --enter-viking-edge: #c4a571;
+  --enter-viking-edge-inner: #e0ca95;
+  --enter-viking-label: #efe5cc;
+  --enter-viking-side: rgba(196, 158, 98, 0.34);
+  --enter-viking-side-glow: rgba(247, 214, 150, 0.3);
 }
 
 html[data-theme='default'] .theme-toggle.is-enter::before {
   content: '';
   position: absolute;
   inset: 2px;
-  border: 1px solid rgba(233, 195, 128, 0.72);
-  clip-path: polygon(
-    var(--enter-viking-cut-inner) 0,
-    calc(100% - var(--enter-viking-cut-inner)) 0,
-    100% 50%,
-    calc(100% - var(--enter-viking-cut-inner)) 100%,
-    var(--enter-viking-cut-inner) 100%,
-    0 50%
-  );
+  border: 1px solid var(--enter-viking-edge-inner);
+  border-radius: calc(var(--enter-viking-radius) - 2px);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 238, 198, 0.12) 0 12%,
+      transparent 16% 84%,
+      rgba(255, 238, 198, 0.12) 88% 100%
+    ),
+    linear-gradient(180deg, rgba(255, 247, 227, 0.08), transparent 40%, rgba(0, 0, 0, 0.24));
   opacity: 0;
+  transform: scale(0.985);
   pointer-events: none;
-  transition: opacity 180ms ease;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 html[data-theme='default'] .theme-toggle.is-enter::after {
@@ -1701,38 +1709,36 @@ html[data-theme='default'] .theme-toggle.is-enter::after {
   width: 34%;
   left: -40%;
   opacity: 0;
-  transform: skewX(-24deg);
-  background: linear-gradient(110deg, transparent, rgba(241, 220, 173, 0.86), transparent);
+  transform: skewX(-22deg);
+  background: linear-gradient(110deg, transparent, var(--enter-viking-side-glow), transparent);
   transition:
     left 460ms var(--ease),
     opacity 220ms ease;
 }
 
 html[data-theme='default'] .theme-toggle.is-enter:hover {
-  clip-path: polygon(
-    var(--enter-viking-cut) 0,
-    calc(100% - var(--enter-viking-cut)) 0,
-    100% 50%,
-    calc(100% - var(--enter-viking-cut)) 100%,
-    var(--enter-viking-cut) 100%,
-    0 50%
-  );
-  border-color: #d3b176;
-  color: #f7e8c5;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+  border-radius: var(--enter-viking-radius);
+  border-color: var(--enter-viking-edge);
+  color: var(--enter-viking-label);
+  text-shadow:
+    0 1px 0 rgba(6, 2, 8, 0.9),
+    0 0 8px rgba(117, 185, 255, 0.26);
   background:
-    radial-gradient(circle at 8% 50%, rgba(221, 193, 140, 0.92) 0 4px, transparent 5px),
-    radial-gradient(circle at 92% 50%, rgba(221, 193, 140, 0.92) 0 4px, transparent 5px),
-    linear-gradient(180deg, #5c81a6 0%, #385b7d 52%, #253a50 100%);
+    linear-gradient(90deg, var(--enter-viking-side) 0 10%, transparent 16% 84%, var(--enter-viking-side) 90% 100%),
+    linear-gradient(180deg, rgba(252, 238, 205, 0.2) 0%, transparent 24%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.04) 0 3px, rgba(0, 0, 0, 0.08) 3px 7px),
+    radial-gradient(circle at 50% 14%, rgba(138, 204, 255, 0.3) 0%, transparent 58%),
+    linear-gradient(180deg, #4a78b0 0%, #30547f 54%, #1b304c 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 239, 202, 0.62),
-    inset 0 -14px 18px rgba(8, 4, 2, 0.62),
-    0 11px 20px rgba(0, 0, 0, 0.44);
+    inset 0 1px 0 rgba(255, 239, 202, 0.58),
+    inset 0 -14px 20px rgba(8, 4, 2, 0.56),
+    0 11px 20px rgba(0, 0, 0, 0.42);
   transform: translateY(-2px);
 }
 
 html[data-theme='default'] .theme-toggle.is-enter:hover::before {
   opacity: 1;
+  transform: none;
 }
 
 html[data-theme='default'] .theme-toggle.is-enter:hover::after {
@@ -2124,10 +2130,15 @@ html[data-theme='default'] .catalog-tools span {
   }
 }
 
-/* Viking mode: arcane form factor (faceted RPG silhouette, existing palette) */
+/* Viking mode: forged RPG controls (beveled frame, no gem circles) */
 html[data-theme='viking'] {
-  --viking-btn-cut: 14px;
-  --viking-btn-cut-inner: 10px;
+  --viking-btn-border: #b89a64;
+  --viking-btn-border-inner: #dcc48f;
+  --viking-btn-label: #efe5ff;
+  --viking-btn-main-top: #5c4bb7;
+  --viking-btn-main-mid: #3c2f8a;
+  --viking-btn-main-bottom: #211a4d;
+  --viking-btn-radius: 13px;
 }
 
 html[data-theme='viking'] .site-nav a,
@@ -2136,36 +2147,58 @@ html[data-theme='viking'] .theme-toggle,
 html[data-theme='viking'] .cart-button,
 html[data-theme='viking'] .filter-row button,
 html[data-theme='viking'] .icon-button {
+  --viking-core-top: var(--viking-btn-main-top);
+  --viking-core-mid: var(--viking-btn-main-mid);
+  --viking-core-bottom: var(--viking-btn-main-bottom);
+  --viking-core-glow: rgba(174, 151, 255, 0.32);
+  --viking-edge: var(--viking-btn-border);
+  --viking-edge-inner: var(--viking-btn-border-inner);
+  --viking-side-plate: rgba(184, 154, 100, 0.46);
+  --viking-side-plate-glow: rgba(250, 225, 166, 0.3);
   position: relative;
+  z-index: 0;
   isolation: isolate;
   overflow: hidden;
-  min-height: 38px;
-  padding-inline: calc(var(--viking-btn-cut) + 8px);
-  border: 1px solid #c8ab73;
-  border-radius: 0;
-  clip-path: polygon(
-    var(--viking-btn-cut) 0,
-    calc(100% - var(--viking-btn-cut)) 0,
-    100% 50%,
-    calc(100% - var(--viking-btn-cut)) 100%,
-    var(--viking-btn-cut) 100%,
-    0 50%
-  );
-  color: #f7e8c5;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--viking-btn-min-height, 40px);
+  padding-inline: 20px;
+  border: 1px solid var(--viking-edge);
+  border-radius: var(--viking-btn-radius);
+  color: var(--viking-btn-label);
+  text-shadow:
+    0 1px 0 rgba(6, 2, 8, 0.9),
+    0 0 9px rgba(124, 95, 230, 0.34);
   background:
-    radial-gradient(circle at 8% 50%, rgba(223, 187, 121, 0.85) 0 4px, transparent 5px),
-    radial-gradient(circle at 92% 50%, rgba(223, 187, 121, 0.85) 0 4px, transparent 5px),
-    linear-gradient(180deg, #7a542b 0%, #4b3219 52%, #281a0d 100%);
+    linear-gradient(90deg, var(--viking-side-plate) 0 10%, transparent 16% 84%, var(--viking-side-plate) 90% 100%),
+    linear-gradient(180deg, rgba(252, 238, 205, 0.24) 0%, transparent 24%),
+    repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.04) 0 3px, rgba(0, 0, 0, 0.08) 3px 7px),
+    radial-gradient(circle at 50% 14%, var(--viking-core-glow) 0%, transparent 58%),
+    linear-gradient(180deg, var(--viking-core-top) 0%, var(--viking-core-mid) 54%, var(--viking-core-bottom) 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    170% 100%,
+    100% 100%,
+    100% 100%;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0;
   box-shadow:
-    inset 0 1px 0 rgba(255, 229, 174, 0.54),
-    inset 0 -12px 16px rgba(8, 4, 2, 0.55),
-    0 8px 16px rgba(1, 2, 4, 0.4);
+    inset 0 1px 0 rgba(255, 232, 185, 0.54),
+    inset 0 -12px 16px rgba(6, 4, 10, 0.5),
+    0 10px 18px rgba(2, 3, 8, 0.46);
   transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    filter 180ms ease;
+    transform 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    filter 170ms ease,
+    background-position 280ms ease;
 }
 
 html[data-theme='viking'] .site-nav a::before,
@@ -2177,15 +2210,20 @@ html[data-theme='viking'] .icon-button::before {
   content: '';
   position: absolute;
   inset: 3px;
-  border: 1px solid rgba(233, 195, 128, 0.72);
-  clip-path: polygon(
-    var(--viking-btn-cut-inner) 0,
-    calc(100% - var(--viking-btn-cut-inner)) 0,
-    100% 50%,
-    calc(100% - var(--viking-btn-cut-inner)) 100%,
-    var(--viking-btn-cut-inner) 100%,
-    0 50%
-  );
+  border: 1px solid color-mix(in srgb, var(--viking-edge-inner) 88%, transparent);
+  border-radius: calc(var(--viking-btn-radius) - 3px);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 238, 198, 0.12) 0 12%,
+      transparent 16% 84%,
+      rgba(255, 238, 198, 0.12) 88% 100%
+    ),
+    linear-gradient(180deg, rgba(255, 247, 227, 0.08), transparent 40%, rgba(0, 0, 0, 0.24));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 247, 223, 0.25),
+    inset 0 -1px 0 rgba(25, 15, 9, 0.7);
+  z-index: -2;
   pointer-events: none;
 }
 
@@ -2197,10 +2235,126 @@ html[data-theme='viking'] .filter-row button::after,
 html[data-theme='viking'] .icon-button::after {
   content: '';
   position: absolute;
-  inset: auto 10px 5px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(247, 222, 175, 0.72), transparent);
+  inset: 1px;
+  border-radius: calc(var(--viking-btn-radius) - 1px);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0,
+      var(--viking-side-plate-glow) 8%,
+      transparent 22%,
+      transparent 78%,
+      var(--viking-side-plate-glow) 92%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 34%, rgba(0, 0, 0, 0.2));
+  z-index: -1;
   pointer-events: none;
+}
+
+html[data-theme='viking'] .button,
+html[data-theme='viking'] .theme-toggle,
+html[data-theme='viking'] .cart-button,
+html[data-theme='viking'] .filter-row button,
+html[data-theme='viking'] .icon-button {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+html[data-theme='viking'] .site-nav a {
+  --viking-core-top: #7a5d36;
+  --viking-core-mid: #4f351d;
+  --viking-core-bottom: #2b1b10;
+  --viking-core-glow: rgba(239, 189, 110, 0.26);
+  --viking-side-plate: rgba(180, 136, 74, 0.42);
+  --viking-side-plate-glow: rgba(239, 189, 110, 0.28);
+  --viking-btn-label: #edd9af;
+  --viking-btn-radius: 11px;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html[data-theme='viking'] .cart-button {
+  --viking-core-top: #a56a35;
+  --viking-core-mid: #6f3f20;
+  --viking-core-bottom: #3d2113;
+  --viking-core-glow: rgba(242, 165, 88, 0.32);
+  --viking-side-plate: rgba(212, 164, 92, 0.46);
+  --viking-side-plate-glow: rgba(248, 205, 129, 0.32);
+  --viking-btn-label: #f7e5bf;
+}
+
+html[data-theme='viking'] .filter-row button {
+  --viking-core-top: #61594d;
+  --viking-core-mid: #443c34;
+  --viking-core-bottom: #27211d;
+  --viking-core-glow: rgba(199, 184, 161, 0.2);
+  --viking-side-plate: rgba(170, 150, 122, 0.34);
+  --viking-side-plate-glow: rgba(214, 198, 176, 0.22);
+  --viking-btn-label: #e7dbc7;
+  --viking-btn-radius: 10px;
+  min-height: 34px;
+  letter-spacing: 0.08em;
+}
+
+html[data-theme='viking'] .icon-button {
+  --viking-core-top: #5d5458;
+  --viking-core-mid: #41383d;
+  --viking-core-bottom: #241d21;
+  --viking-core-glow: rgba(214, 197, 170, 0.16);
+  --viking-side-plate: rgba(158, 139, 111, 0.34);
+  --viking-side-plate-glow: rgba(214, 197, 170, 0.22);
+  --viking-btn-label: #e6dac8;
+  --viking-btn-radius: 10px;
+  min-height: 34px;
+  padding-inline: 13px;
+  font-size: 0.68rem;
+}
+
+html[data-theme='viking'] .theme-toggle.is-active {
+  --viking-core-top: #4a78b0;
+  --viking-core-mid: #30547f;
+  --viking-core-bottom: #1b304c;
+  --viking-core-glow: rgba(138, 204, 255, 0.34);
+  --viking-side-plate: rgba(131, 173, 214, 0.36);
+  --viking-side-plate-glow: rgba(170, 219, 255, 0.3);
+  --viking-btn-label: #e8f4ff;
+  --viking-btn-min-height: 44px;
+}
+
+html[data-theme='viking'] .theme-toggle.is-enter {
+  --viking-core-top: #8a6333;
+  --viking-core-mid: #5c3e22;
+  --viking-core-bottom: #342214;
+  --viking-core-glow: rgba(241, 183, 105, 0.3);
+  --viking-side-plate: rgba(206, 151, 82, 0.38);
+  --viking-side-plate-glow: rgba(244, 205, 141, 0.27);
+  --viking-btn-label: #f4e0b8;
+}
+
+html[data-theme='viking'] .button.ghost {
+  --viking-core-top: #7b3038;
+  --viking-core-mid: #57222a;
+  --viking-core-bottom: #31151c;
+  --viking-core-glow: rgba(225, 122, 130, 0.3);
+  --viking-edge: #a67863;
+  --viking-edge-inner: #c99882;
+  --viking-side-plate: rgba(192, 137, 120, 0.4);
+  --viking-side-plate-glow: rgba(246, 189, 171, 0.27);
+  --viking-btn-label: #f6dddb;
+}
+
+html[data-theme='viking'] .button.is-added {
+  --viking-core-top: #3f7c70;
+  --viking-core-mid: #2a5c52;
+  --viking-core-bottom: #173a34;
+  --viking-core-glow: rgba(117, 228, 196, 0.28);
+  --viking-edge: #7f9f7e;
+  --viking-edge-inner: #a1c29d;
+  --viking-side-plate: rgba(131, 185, 164, 0.36);
+  --viking-side-plate-glow: rgba(178, 237, 214, 0.24);
+  --viking-btn-label: #dbfff1;
 }
 
 html[data-theme='viking'] .site-nav a:hover,
@@ -2211,13 +2365,19 @@ html[data-theme='viking'] .theme-toggle:hover,
 html[data-theme='viking'] .filter-row button:hover,
 html[data-theme='viking'] .filter-row button.is-active,
 html[data-theme='viking'] .icon-button:hover {
-  border-color: #ddc08b;
-  filter: brightness(1.08);
+  border-color: #e6cb94;
+  filter: brightness(1.07) saturate(1.08);
   transform: translateY(-2px);
+  background-position:
+    0 0,
+    0 0,
+    56% 0,
+    0 0,
+    0 0;
   box-shadow:
-    inset 0 1px 0 rgba(255, 239, 202, 0.62),
-    inset 0 -14px 18px rgba(8, 4, 2, 0.62),
-    0 11px 20px rgba(0, 0, 0, 0.44);
+    inset 0 1px 0 rgba(255, 246, 222, 0.58),
+    inset 0 -14px 20px rgba(6, 4, 10, 0.54),
+    0 13px 24px rgba(0, 0, 0, 0.48);
 }
 
 html[data-theme='viking'] .site-nav a:active,
@@ -2226,74 +2386,48 @@ html[data-theme='viking'] .cart-button:active,
 html[data-theme='viking'] .theme-toggle:active,
 html[data-theme='viking'] .filter-row button:active,
 html[data-theme='viking'] .icon-button:active {
-  transform: translateY(0);
+  transform: translateY(1px);
+  filter: brightness(0.96);
   box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 228, 171, 0.35),
-    0 4px 10px rgba(0, 0, 0, 0.35);
+    inset 0 3px 7px rgba(0, 0, 0, 0.56),
+    inset 0 1px 0 rgba(255, 229, 179, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.42);
 }
 
-html[data-theme='viking'] .icon-button {
-  --viking-btn-cut: 10px;
-  --viking-btn-cut-inner: 7px;
-  min-height: 34px;
-  padding-inline: 14px;
-}
-
-html[data-theme='viking'] .theme-toggle.is-active {
-  border-color: #d3b176;
-  background:
-    radial-gradient(circle at 8% 50%, rgba(221, 193, 140, 0.92) 0 4px, transparent 5px),
-    radial-gradient(circle at 92% 50%, rgba(221, 193, 140, 0.92) 0 4px, transparent 5px),
-    linear-gradient(180deg, #5c81a6 0%, #385b7d 52%, #253a50 100%);
-}
-
-html[data-theme='viking'] .theme-toggle.is-enter {
-  background:
-    radial-gradient(circle at 8% 50%, rgba(223, 187, 121, 0.85) 0 4px, transparent 5px),
-    radial-gradient(circle at 92% 50%, rgba(223, 187, 121, 0.85) 0 4px, transparent 5px),
-    linear-gradient(180deg, #7a542b 0%, #4b3219 52%, #281a0d 100%);
-}
-
-html[data-theme='viking'] .button.ghost {
-  border-color: #a38a61;
-  color: #e8dcc0;
-  background:
-    radial-gradient(circle at 8% 50%, rgba(174, 153, 111, 0.7) 0 3px, transparent 4px),
-    radial-gradient(circle at 92% 50%, rgba(174, 153, 111, 0.7) 0 3px, transparent 4px),
-    linear-gradient(180deg, #4c433c 0%, #302923 52%, #1e1916 100%);
-}
-
-html[data-theme='viking'] .button.is-added {
-  border-color: #a39a63;
-  color: #f1ead0;
-  background:
-    radial-gradient(circle at 8% 50%, rgba(199, 189, 125, 0.84) 0 4px, transparent 5px),
-    radial-gradient(circle at 92% 50%, rgba(199, 189, 125, 0.84) 0 4px, transparent 5px),
-    linear-gradient(180deg, #6d7b3d 0%, #47552b 52%, #2b361d 100%);
+html[data-theme='viking'] .button:disabled,
+html[data-theme='viking'] .cart-button:disabled,
+html[data-theme='viking'] .theme-toggle:disabled,
+html[data-theme='viking'] .filter-row button:disabled,
+html[data-theme='viking'] .icon-button:disabled {
+  transform: none;
+  filter: saturate(0.6) brightness(0.78);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 229, 179, 0.28),
+    inset 0 -12px 16px rgba(4, 3, 7, 0.52),
+    0 6px 12px rgba(0, 0, 0, 0.28);
 }
 
 html[data-theme='viking'] .cart-button span {
-  border: 1px solid #d3b078;
-  color: #f8f4e1;
-  background: radial-gradient(circle at 35% 28%, #f8e6bd 0%, #b38846 46%, #68451f 100%);
+  border: 1px solid #d5b67a;
+  color: #fff4d9;
+  background: radial-gradient(circle at 35% 28%, #fff8d8 0%, #e0b566 38%, #8b5f27 66%, #502f13 100%);
   box-shadow:
-    inset 0 1px 1px rgba(255, 239, 200, 0.62),
-    0 1px 4px rgba(0, 0, 0, 0.52);
+    inset 0 1px 1px rgba(255, 244, 214, 0.82),
+    0 1px 6px rgba(0, 0, 0, 0.56);
 }
 
 @media (max-width: 640px) {
-  html[data-theme='viking'] {
-    --viking-btn-cut: 11px;
-    --viking-btn-cut-inner: 8px;
-  }
-
   html[data-theme='viking'] .site-nav a,
   html[data-theme='viking'] .button,
   html[data-theme='viking'] .theme-toggle,
   html[data-theme='viking'] .cart-button,
-  html[data-theme='viking'] .filter-row button {
+  html[data-theme='viking'] .filter-row button,
+  html[data-theme='viking'] .icon-button {
     min-height: 34px;
-    padding-inline: calc(var(--viking-btn-cut) + 6px);
+    padding-inline: 15px;
+  }
+
+  html[data-theme='viking'] .site-nav a {
+    font-size: 0.7rem;
   }
 }

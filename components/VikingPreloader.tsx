@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 
 const PRELOADER_DURATION_MS = 15000;
@@ -32,12 +32,14 @@ export function VikingPreloader() {
   const [isVisible, setVisible] = useState(false);
   const [canBegin, setCanBegin] = useState(false);
   const [isBgReady, setBgReady] = useState(false);
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
-    if (!isReady) {
+    if (!isReady || hasInitializedRef.current) {
       return;
     }
 
+    hasInitializedRef.current = true;
     const shouldShow = theme === 'viking' && isReloadNavigation();
 
     if (!shouldShow) {
