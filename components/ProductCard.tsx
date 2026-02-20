@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import type { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
+import { ProductGallery } from '@/components/ProductGallery';
 
 type ProductCardProps = {
   product: Product;
@@ -14,10 +14,16 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article className={`product-card ${product.archived ? 'is-archived' : ''}`.trim()}>
-      <div className="product-image-wrap">
-        <Image src={product.image} alt={product.name} width={640} height={760} className="product-image" />
+      <ProductGallery
+        product={product}
+        width={640}
+        height={760}
+        frameClassName="product-image-wrap"
+        imageClassName="product-image"
+        variant="product-card"
+      >
         {product.archived ? <span className="product-badge">Archived</span> : null}
-      </div>
+      </ProductGallery>
 
       <div className="product-meta">
         <div>

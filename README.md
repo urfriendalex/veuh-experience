@@ -33,3 +33,17 @@ Deploy to Vercel as a standard Next.js project.
 - `data/products.ts`
 - `styles/globals.css`
 - `prd.md`
+
+## Product Gallery Upload Structure
+Product cards and experience screens auto-detect galleries from this structure:
+
+```text
+public/products/<product-id>/1.(webp|jpg|jpeg|png|svg)
+public/products/<product-id>/2.(webp|jpg|jpeg|png|svg)
+public/products/<product-id>/3.(webp|jpg|jpeg|png|svg)
+...
+```
+
+- `<product-id>` must match `data/products.ts` `id` (for example: `1`, `2`, `3`).
+- Images must be sequential starting from `1` with no gaps.
+- If no gallery folder is found, the app falls back to each product's `image` field.

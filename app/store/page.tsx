@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { Header } from '@/components/Header';
 import { ProductCard } from '@/components/ProductCard';
@@ -8,6 +7,7 @@ import { products } from '@/data/products';
 import { STORAGE_KEYS } from '@/data/storage';
 
 type FilterValue = 'all' | 'collection' | 'archive';
+const STORE_BANNER_VIDEO = '/banner_video.mp4';
 
 export default function StorePage() {
   const [filter, setFilter] = useState<FilterValue>('all');
@@ -27,11 +27,6 @@ export default function StorePage() {
 
     return products;
   }, [filter]);
-
-  const featuredProduct = useMemo(() => {
-    const firstActive = visibleProducts.find((product) => !product.archived);
-    return firstActive ?? visibleProducts[0];
-  }, [visibleProducts]);
 
   return (
     <main className="page-shell store-page">
@@ -72,15 +67,20 @@ export default function StorePage() {
       <section className="store-hero" aria-label="Featured product">
         <h2>Ready-to-Wear For Birthday Delivery</h2>
         <div className="store-hero-stage">
-          {featuredProduct ? (
-            <Image
-              src={featuredProduct.image}
-              alt={featuredProduct.name}
-              width={760}
-              height={880}
-              className="store-hero-image"
-            />
-          ) : null}
+          <video
+            className="store-hero-image store-hero-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-label="VEUH collection banner video"
+            onCanPlay={(event) => {
+              event.currentTarget.play().catch(() => undefined);
+            }}
+          >
+            <source src={STORE_BANNER_VIDEO} type="video/mp4" />
+          </video>
         </div>
       </section>
 

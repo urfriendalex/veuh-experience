@@ -11,6 +11,8 @@ import {
 import type { Product } from '@/data/products';
 
 type CartMap = Record<string, Product>;
+export type CheckoutMode = 'standard' | 'ritual';
+const FINAL_PAYABLE_TOTAL = 20;
 
 type CartContextValue = {
   items: Product[];
@@ -18,6 +20,7 @@ type CartContextValue = {
   subtotal: number;
   isCartOpen: boolean;
   isCheckoutOpen: boolean;
+  checkoutMode: CheckoutMode;
   orderPlaced: boolean;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
@@ -25,7 +28,7 @@ type CartContextValue = {
   isInCart: (productId: string) => boolean;
   openCart: () => void;
   closeCart: () => void;
-  openCheckout: () => void;
+  openCheckout: (mode?: CheckoutMode) => void;
   closeCheckout: () => void;
   placeOrder: () => void;
   resetOrderState: () => void;
@@ -37,13 +40,14 @@ export function CartProvider({ children }: PropsWithChildren) {
   const [cartMap, setCartMap] = useState<CartMap>({});
   const [isCartOpen, setCartOpen] = useState(false);
   const [isCheckoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutMode, setCheckoutMode] = useState<CheckoutMode>('standard');
   const [orderPlaced, setOrderPlaced] = useState(false);
 
   const items = useMemo(() => Object.values(cartMap), [cartMap]);
   const count = items.length;
   const subtotal = useMemo(
-    () => items.reduce((total, item) => total + item.price, 0),
-    [items]
+    () => (count > 0 ? FINAL_PAYABLE_TOTAL : 0),
+    [count]
   );
 
   const addToCart = useCallback((product: Product) => {
@@ -89,7 +93,8 @@ export function CartProvider({ children }: PropsWithChildren) {
     setCartOpen(false);
   }, []);
 
-  const openCheckout = useCallback(() => {
+  const openCheckout = useCallback((mode: CheckoutMode = 'standard') => {
+    setCheckoutMode(mode);
     setCheckoutOpen(true);
     setCartOpen(false);
     setOrderPlaced(false);
@@ -97,6 +102,7 @@ export function CartProvider({ children }: PropsWithChildren) {
 
   const closeCheckout = useCallback(() => {
     setCheckoutOpen(false);
+    setCheckoutMode('standard');
   }, []);
 
   const placeOrder = useCallback(() => {
@@ -115,6 +121,7 @@ export function CartProvider({ children }: PropsWithChildren) {
       subtotal,
       isCartOpen,
       isCheckoutOpen,
+      checkoutMode,
       orderPlaced,
       addToCart,
       removeFromCart,
@@ -133,6 +140,7 @@ export function CartProvider({ children }: PropsWithChildren) {
       subtotal,
       isCartOpen,
       isCheckoutOpen,
+      checkoutMode,
       orderPlaced,
       addToCart,
       removeFromCart,

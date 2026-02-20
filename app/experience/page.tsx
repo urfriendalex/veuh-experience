@@ -1,44 +1,55 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { Header } from '@/components/Header';
-import { activeProducts } from '@/data/products';
+import { ProductGallery } from '@/components/ProductGallery';
+import { products } from '@/data/products';
 import { STORAGE_KEYS } from '@/data/storage';
 import { useCart } from '@/context/CartContext';
+import { useTheme } from '@/context/ThemeContext';
 
-type ExperienceStep = -1 | 0 | 1 | 2 | 3 | 4 | 5;
+type ExperienceStep = number;
 
 export default function ExperiencePage() {
   const [step, setStep] = useState<ExperienceStep>(-1);
-  const [cartOpenedOnce, setCartOpenedOnce] = useState(false);
-  const { addToCart, isInCart, openCart } = useCart();
+  const [gateMessage, setGateMessage] = useState('');
+  const [isRitualReady, setRitualReady] = useState(false);
+  const { addToCart, isInCart, openCheckout } = useCart();
+  const { theme, setTheme } = useTheme();
+  const collectionProducts = useMemo(() => products.filter((product) => !product.archived), []);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEYS.mode, 'experience');
-  }, []);
+
+    if (window.localStorage.getItem(STORAGE_KEYS.vikingGatePassed) === 'true') {
+      collectionProducts.forEach((product) => addToCart(product));
+      openCheckout('ritual');
+      setRitualReady(true);
+      setStep(collectionProducts.length + 1);
+      window.localStorage.removeItem(STORAGE_KEYS.vikingGatePassed);
+    }
+  }, [addToCart, openCheckout, collectionProducts]);
+
+  useEffect(() => {
+    if (theme === 'viking') {
+      setGateMessage('');
+    }
+  }, [theme]);
 
   const progress = useMemo(() => {
     if (step < 0) {
       return 0;
     }
 
-    if (step >= activeProducts.length) {
-      return activeProducts.length;
+    if (step >= collectionProducts.length) {
+      return collectionProducts.length;
     }
 
     return step + 1;
-  }, [step]);
+  }, [step, collectionProducts.length]);
 
-  useEffect(() => {
-    if (step === activeProducts.length && !cartOpenedOnce) {
-      openCart();
-      setCartOpenedOnce(true);
-    }
-  }, [step, openCart, cartOpenedOnce]);
-
-  const currentProduct = step >= 0 && step < activeProducts.length ? activeProducts[step] : null;
+  const currentProduct = step >= 0 && step < collectionProducts.length ? collectionProducts[step] : null;
 
   if (step === -1) {
     return (
@@ -49,9 +60,21 @@ export default function ExperiencePage() {
           <p className="product-kicker">Experience Mode</p>
           <h1>Guided collection reveal</h1>
           <p>
-            Move through all five main pieces. Each step unlocks only after the current piece is added to
-            cart.
+            Move through all {collectionProducts.length} new collection pieces. Each step unlocks only
+            after the current piece is added to cart.
           </p>
+
+          <div className="viking-mechanics-panel" role="note" aria-label="Viking mode mechanics">
+            <h3>Viking mode mechanics</h3>
+            <p>Item copy changes in Viking mode, and the final refresh checkpoint only unlocks in Viking.</p>
+            {theme === 'viking' ? (
+              <p className="viking-mechanics-status">Viking mode is currently active.</p>
+            ) : (
+              <button type="button" className="button" onClick={() => setTheme('viking')}>
+                Enable Viking mode now
+              </button>
+            )}
+          </div>
 
           <div className="entry-actions">
             <button type="button" className="button" onClick={() => setStep(0)}>
@@ -68,6 +91,10 @@ export default function ExperiencePage() {
 
   if (currentProduct) {
     const alreadyAdded = isInCart(currentProduct.id);
+    const description =
+      theme === 'viking'
+        ? currentProduct.vikingNarrative ?? currentProduct.vikingDescription ?? currentProduct.narrative
+        : currentProduct.narrative;
 
     return (
       <main className="page-shell experience-shell immersive">
@@ -76,28 +103,31 @@ export default function ExperiencePage() {
         <section className="experience-panel fullscreen">
           <div className="experience-progress">
             <span>
-              {progress}/{activeProducts.length}
+              {progress}/{collectionProducts.length}
             </span>
             <div className="progress-track">
-              <i style={{ width: `${(progress / activeProducts.length) * 100}%` }} />
+              <i style={{ width: `${(progress / collectionProducts.length) * 100}%` }} />
             </div>
           </div>
 
           <div className="experience-card">
-            <div className="experience-image-wrap">
-              <Image
-                src={currentProduct.image}
-                alt={currentProduct.name}
-                width={900}
-                height={900}
-                className="experience-image"
-              />
-            </div>
+            <ProductGallery
+              product={currentProduct}
+              width={900}
+              height={900}
+              frameClassName="experience-image-wrap"
+              imageClassName="experience-image"
+              variant="experience"
+              priority
+            />
 
             <div className="experience-copy">
-              <p className="product-kicker">{currentProduct.category}</p>
+              <p className="product-kicker">New Collection · {currentProduct.category}</p>
               <h2>{currentProduct.name}</h2>
-              <p>{currentProduct.narrative}</p>
+              <p className="experience-description-variant">
+                {theme === 'viking' ? 'Viking Item Description' : 'Item Description'}
+              </p>
+              <p>{description}</p>
               <p className="product-size">Size: {currentProduct.size}</p>
               <div className="experience-actions">
                 <button
@@ -110,7 +140,7 @@ export default function ExperiencePage() {
                 <button
                   type="button"
                   className="button ghost"
-                  onClick={() => setStep((current) => (current + 1) as ExperienceStep)}
+                  onClick={() => setStep((current) => current + 1)}
                   disabled={!alreadyAdded}
                 >
                   {alreadyAdded ? 'Next piece' : 'Add to cart to continue'}
@@ -123,33 +153,77 @@ export default function ExperiencePage() {
     );
   }
 
-  const completedCount = activeProducts.filter((product) => isInCart(product.id)).length;
+  if (step === collectionProducts.length) {
+    const handleRefreshGate = () => {
+      if (theme !== 'viking') {
+        setGateMessage('Refresh blocked. Switch to Viking mode first.');
+        return;
+      }
+
+      window.localStorage.setItem(STORAGE_KEYS.vikingGatePassed, 'true');
+      window.location.reload();
+    };
+
+    return (
+      <main className="page-shell">
+        <Header />
+
+        <section className="experience-panel summary viking-gate-panel">
+          <p className="product-kicker">System Checkpoint</p>
+          <h1>Oops, something went wrong.</h1>
+          <p>Switch to Viking mode and reload the page to continue.</p>
+
+          <div className="viking-oops-card">
+            <p className="viking-oops-code">Error: RITUAL_SYNC_ABORTED</p>
+            <p className="viking-oops-help">Refresh only works while Viking mode is active.</p>
+            <button type="button" className="button checkout-pay-button viking-refresh-button" onClick={handleRefreshGate}>
+              Refresh Page
+            </button>
+          </div>
+
+          {gateMessage ? (
+            <p className="viking-gate-warning" role="status">
+              {gateMessage}
+            </p>
+          ) : null}
+
+          <div className="summary-actions">
+            {theme === 'viking' ? null : (
+              <button type="button" className="button" onClick={() => setTheme('viking')}>
+                Switch to Viking mode
+              </button>
+            )}
+            <Link href="/store" className="button ghost">
+              Browse store mode
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="page-shell">
       <Header />
 
       <section className="experience-panel summary">
-        <p className="product-kicker">Collection Complete</p>
-        <h1>The cart is open and ready.</h1>
-        <p>
-          You added {completedCount} of {activeProducts.length} main pieces. Complete checkout to reveal the
-          birthday delivery message.
-        </p>
-
+        <p className="product-kicker">Ritual Checkout</p>
+        <h1>All items were added to your cart.</h1>
+        <p>Checkout is ready with the final $20 payment step.</p>
         <div className="summary-actions">
           <button
             type="button"
             className="button"
             onClick={() => {
-              activeProducts.forEach((product) => addToCart(product));
-              openCart();
+              collectionProducts.forEach((product) => addToCart(product));
+              openCheckout('ritual');
+              setRitualReady(true);
             }}
           >
-            Add remaining + open cart
+            {isRitualReady ? 'Open checkout again' : 'Open checkout'}
           </button>
           <Link href="/store" className="button ghost">
-            Browse in store mode
+            Go to store
           </Link>
         </div>
       </section>

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
+import { getPrimaryProductImage } from '@/data/products';
 
 export function CartDrawer() {
   const {
@@ -37,7 +38,13 @@ export function CartDrawer() {
             <ul className="cart-list">
               {items.map((item) => (
                 <li key={item.id} className="cart-item">
-                  <Image src={item.image} alt={item.name} width={64} height={64} className="cart-thumb" />
+                  <Image
+                    src={getPrimaryProductImage(item)}
+                    alt={item.name}
+                    width={64}
+                    height={64}
+                    className="cart-thumb"
+                  />
                   <div className="cart-item-copy">
                     <h3>{item.name}</h3>
                     <p>${item.price}</p>
@@ -68,7 +75,7 @@ export function CartDrawer() {
             <button
               type="button"
               className="button"
-              onClick={openCheckout}
+              onClick={() => openCheckout()}
               disabled={count === 0}
             >
               Checkout

@@ -91,29 +91,56 @@ export function VikingPreloader() {
       <div className="viking-preloader-scene">
         <aside className="viking-preloader-panel">
           <div className="viking-preloader-panel-head">
-            <p className="viking-preloader-kicker">VEUH STUDIO</p>
-            <h2>Entering Viking Mode</h2>
+            <p className="viking-preloader-kicker">ARMAVIR</p>
+            <h2>VIKTOR VEUH выходит на мировую сцену</h2>
           </div>
 
           <p className="viking-preloader-description">
-            Calling the northbound skin, loading collection visuals, and preparing your storefront.
+            От кассетных киосков девяностых до северных набегов на драккаре: VIKTOR VEUH ведет ARMAVIR
+            только по одной доктрине: HYPE, HYPE и еще раз HYPE. Дипломатия возможна, но только если
+            оппонент сначала подпишется на движ.
           </p>
 
-          <h3>Loading Sequence</h3>
+          <h3>Особенности и баффы</h3>
           <ul className="viking-preloader-list">
-            <li>Runic interface layers</li>
-            <li>Cart and checkout systems</li>
-            <li>Collection and story scenes</li>
+            <li>
+              <strong>Берсерк на Кадиллаке:</strong> +50% к морали войск, если бой начинается под
+              проверенный трек Моргенштерна.
+            </li>
+            <li>
+              <strong>Балон из караоке:</strong> +2 к харизме, +1 к броне и бесконечный запас
+              уверенности в бандне.
+            </li>
+            <li>
+              <strong>Захват шумом:</strong> соседние цивилизации теряют концентрацию, когда VIKTOR
+              кричит «HYPE!».
+            </li>
+            <li>
+              <strong>Чета Работа:</strong> рынок в столице дает +1 к золоту за каждый мем,
+              который пережил неделю.
+            </li>
+            <li>
+              <strong>Слава ARMAVIR:</strong> при объявлении войны враг получает дебафф
+              «Кто вообще это остановит?» на три хода.
+            </li>
+            <li>
+              <strong>Налог на HYPE:</strong> все гроки платят +3 золото налога на хайп а протяжение 10 ходов и 20$ в реальной жизни .
+            </li>
           </ul>
 
           <div className="viking-preloader-foot">
             {canBegin ? (
               <div className="viking-preloader-cta">
-                <span className="viking-preloader-orb" aria-hidden>
+                <button
+                  type="button"
+                  className="viking-preloader-orb"
+                  aria-label="Begin game"
+                  onClick={handleBegin}
+                >
                   <GlobeIcon />
-                </span>
+                </button>
                 <button type="button" className="button viking-preloader-explore" onClick={handleBegin}>
-                  Begin Experience
+                  Begin Game
                 </button>
               </div>
             ) : (

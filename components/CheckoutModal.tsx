@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
 const defaultForm = {
@@ -29,11 +30,18 @@ export function CheckoutModal() {
     orderPlaced,
     count,
     subtotal,
-    resetOrderState
+    resetOrderState,
+    checkoutMode
   } = useCart();
+  const router = useRouter();
   const [form, setForm] = useState(defaultForm);
+  const isRitualCheckout = checkoutMode === 'ritual';
 
   const handleClose = () => {
+    if (isRitualCheckout) {
+      return;
+    }
+
     closeCheckout();
     if (orderPlaced) {
       resetOrderState();
@@ -44,11 +52,27 @@ export function CheckoutModal() {
     placeOrder();
   };
 
+  const handleRitualPay = () => {
+    closeCheckout();
+    resetOrderState();
+    router.push('/ritual-pay');
+  };
+
   return (
     <>
-      <div className={`overlay ${isCheckoutOpen ? 'is-visible' : ''}`.trim()} onClick={handleClose} />
+      <div
+        className={`overlay ${isCheckoutOpen ? 'is-visible' : ''}`.trim()}
+        onClick={isRitualCheckout ? undefined : handleClose}
+      />
       <section className={`checkout-modal ${isCheckoutOpen ? 'is-open' : ''}`.trim()} aria-hidden={!isCheckoutOpen}>
-        {!orderPlaced ? (
+        {isRitualCheckout ? (
+          <div className="ritual-checkout">
+            <p className="ritual-price">$20</p>
+            <button type="button" className="button checkout-pay-button" onClick={handleRitualPay}>
+              PAY
+            </button>
+          </div>
+        ) : !orderPlaced ? (
           <>
             <header>
               <h2>Checkout</h2>
