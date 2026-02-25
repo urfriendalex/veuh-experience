@@ -3393,7 +3393,7 @@ html[data-theme='viking'] .cart-button span {
   }
 
   .cart-item {
-    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-columns: 64px minmax(0, 1fr);
     align-items: flex-start;
     gap: 8px;
   }
