@@ -157,6 +157,25 @@ a {
   gap: 10px;
 }
 
+.mobile-nav-toggle,
+.mobile-nav-head,
+.mobile-nav-backdrop,
+.mobile-nav-drawer {
+  display: none;
+}
+
+body.is-mobile-nav-open {
+  overflow: hidden;
+}
+
+body.is-mobile-nav-open nextjs-portal {
+  display: none !important;
+}
+
+.site-header {
+  min-height: 64px;
+}
+
 .theme-toggle,
 .cart-button,
 .icon-button {
@@ -424,7 +443,6 @@ a {
   gap: 6px;
   padding: 6px;
   border-radius: 0;
-  margin-top: 24px;
   background: color-mix(in srgb, var(--surface-alt) 90%, transparent);
   border: 1px solid var(--line);
 }
@@ -874,11 +892,6 @@ a {
   overflow: hidden;
 }
 
-.page-shell.experience-shell.immersive .site-header {
-  position: relative;
-  top: 0;
-}
-
 .page-shell.experience-shell.immersive .experience-panel.intro.fullscreen-entry {
   margin-top: 0;
   min-height: 0;
@@ -1107,7 +1120,7 @@ a {
   margin-top: 6px;
   display: grid;
   grid-template-columns: 1fr auto;
-  align-items: start;
+  align-items: flex-start;
   gap: 20px;
 }
 
@@ -1429,10 +1442,6 @@ html[data-theme='viking'] .experience-card::before {
   pointer-events: none;
   border-radius: 0;
   border: 1px solid rgba(196, 160, 102, 0.34);
-}
-
-html[data-theme='viking'] .site-header {
-  border-radius: 0;
 }
 
 html[data-theme='viking'] .logo {
@@ -2607,7 +2616,7 @@ html[data-theme='default'] .catalog-tools span {
   html[data-theme='default'] .site-header {
     grid-template-columns: 1fr;
     gap: 6px;
-    padding: 8px 0 10px;
+    padding: 8px 0px;
   }
 
   html[data-theme='default'] .site-nav {
@@ -2984,5 +2993,442 @@ html[data-theme='viking'] .cart-button span {
 
   html[data-theme='viking'] .site-nav a {
     font-size: 0.7rem;
+  }
+}
+
+/* Compact header mode: keep a stable header size and move nav into drawer sooner */
+@media (max-width: 1200px) {
+  .page-shell.experience-shell.immersive {
+    width: min(1180px, 92vw);
+  }
+
+  .site-header {
+    min-height: 64px;
+    max-height: 150px;
+    top: 8px;
+    padding: 10px;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  html[data-theme='default'] .logo,
+  html[data-theme='default'] .site-nav-desktop,
+  html[data-theme='default'] .site-actions {
+    grid-column: auto;
+    justify-self: auto;
+  }
+
+  html[data-theme='default'] .button{
+    text-align: center;
+  }
+
+  .logo {
+    grid-column: 1 / -1;
+    width: auto;
+    text-align: center;
+  }
+
+  .site-actions {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-self: stretch;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+    min-height: 36px;
+    width: 100%;
+    padding-inline: 12px;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    justify-content: center;
+  }
+
+  .cart-button {
+    min-height: 36px;
+    width: 100%;
+    padding: 8px 10px;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .site-actions > .theme-toggle {
+    width: 100%;
+    min-height: 36px;
+    justify-content: center;
+    padding-inline: 10px;
+    font-size: 0.68rem;
+  }
+
+  .site-actions > .theme-toggle span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cart-button span {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+  }
+
+  .mobile-nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 980;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: rgba(6, 10, 16, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ease);
+  }
+
+  .mobile-nav-backdrop.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .site-nav-desktop {
+    display: none;
+  }
+
+  .mobile-nav-drawer {
+    display: grid;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    width: 100dvw;
+    max-width: none;
+    min-height: 100dvh;
+    padding: max(14px, env(safe-area-inset-top)) 12px max(16px, env(safe-area-inset-bottom));
+    border-right: 0;
+    background: color-mix(in srgb, var(--surface) 97%, #ffffff 3%);
+    backdrop-filter: blur(18px);
+    box-shadow: none;
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateY(-102%);
+    transition: transform var(--ease), opacity var(--ease);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .mobile-nav-drawer.is-mobile-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-nav-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 4px 2px 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 84%, transparent);
+    margin-bottom: 4px;
+    align-items: center;
+  }
+
+  .mobile-nav-head p {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .mobile-nav-head .theme-toggle {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mobile-nav-close {
+    min-height: 34px;
+    padding-inline: 12px;
+    justify-self: end;
+  }
+
+  .mobile-nav-drawer .nav-ghost {
+    display: block;
+    padding: 8px 4px 2px;
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+  }
+
+  .mobile-nav-drawer a {
+    width: 100%;
+    min-height: 38px;
+    padding: 10px 12px;
+    justify-content: flex-start;
+    white-space: nowrap;
+  }
+}
+
+/* Mobile polish pass: compact header plus stable cards and no overflow jumps */
+@media (max-width: 980px) {
+  .page-shell,
+  .entry-stage {
+    width: calc(100vw - 12px);
+  }
+
+  .entry-hero,
+  .store-head,
+  .experience-panel {
+    padding: clamp(16px, 2.7vw, 24px);
+  }
+
+  .entry-actions,
+  .summary-actions,
+  .experience-actions,
+  .cart-foot-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .entry-actions .button,
+  .summary-actions .button,
+  .experience-actions .button,
+  .cart-foot-actions .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-row,
+  .catalog-topbar {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .filter-row button {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 8px;
+    text-align: center;
+  }
+
+  .catalog-tools {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .page-shell.experience-shell.immersive {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    grid-template-rows: auto auto;
+  }
+
+  .page-shell.experience-shell.immersive .experience-panel.intro.fullscreen-entry,
+  .experience-panel.fullscreen {
+    height: auto;
+    min-height: 0;
+  }
+
+  .experience-panel.fullscreen .experience-card {
+    min-height: 0;
+    grid-template-rows: minmax(280px, 54vw) auto;
+  }
+
+  .experience-panel.fullscreen .experience-image-wrap {
+    height: 100%;
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
+
+  .experience-panel.fullscreen .experience-copy {
+    overflow: visible;
+  }
+
+  .cart-drawer {
+    left: 6px;
+    right: 6px;
+    top: 6px;
+    bottom: 6px;
+    width: auto;
+  }
+
+  .checkout-modal {
+    left: 6px;
+    right: 6px;
+    top: max(6px, env(safe-area-inset-top));
+    width: auto;
+    max-height: calc(100dvh - 12px);
+    overflow: auto;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  .checkout-modal.is-open {
+    transform: translateY(0) scale(1);
+  }
+
+  body.is-viking-loading {
+    touch-action: pan-y;
+  }
+
+  .viking-preloader {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .viking-preloader-scene {
+    height: auto;
+    min-height: 100%;
+    align-items: flex-start;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .viking-preloader-panel {
+    width: min(100%, 560px);
+    min-height: 0;
+    height: auto;
+    justify-self: stretch;
+    border-top: 1px solid #6e3226;
+    border-bottom: 1px solid #6e3226;
+    background: transparent;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    top: 6px;
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .logo {
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+  }
+
+  .mobile-nav-toggle,
+  .cart-button,
+  .site-actions > .theme-toggle {
+    min-height: 34px;
+    padding-inline: 10px;
+  }
+
+  .mobile-nav-toggle {
+    font-size: 0.67rem;
+  }
+
+  .site-actions {
+    gap: 5px;
+  }
+
+  .site-actions > .theme-toggle {
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+  }
+
+  .mobile-nav-drawer {
+    width: 100dvw;
+    padding-inline: 10px;
+  }
+
+  .mobile-nav-drawer a {
+    min-height: 36px;
+    padding: 9px 10px;
+    font-size: 0.72rem;
+  }
+
+  .entry-hero.fullscreen-entry {
+    min-height: calc(100dvh - 20px);
+  }
+
+  .experience-panel.fullscreen .experience-card {
+    grid-template-rows: minmax(240px, 62vw) auto;
+  }
+
+  .entry-hero h1,
+  .experience-panel h1 {
+    font-size: clamp(2rem, 11vw, 3rem);
+    line-height: 0.96;
+  }
+
+  .entry-hero > p,
+  .experience-panel > p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .entry-actions,
+  .summary-actions,
+  .experience-actions,
+  .cart-foot-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-item {
+    grid-template-columns: 56px minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .cart-item .icon-button {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 2px;
+  }
+
+  .checkout-summary {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .viking-preloader.is-bg-ready {
+    padding-inline: 0;
+    background: linear-gradient(180deg, rgba(16, 10, 6, 0.12) 10%, rgba(9, 6, 4, 0.22) 100%),
+    radial-gradient(circle at 18% 26%, rgba(195, 138, 71, 0.26), transparent 48%),
+    radial-gradient(circle at 78% 100%, rgba(97, 59, 30, 0.14), transparent 50%),
+    url('/preloader/bg.webp') 84% / cover no-repeat
+  }
+
+  .viking-preloader-panel {
+    border-left: 0;
+    border-right: 0;
+    padding: 14px;
+  }
+
+  .viking-preloader-list {
+    font-size: 0.82rem;
+    line-height: 1.34;
+  }
+
+  .viking-preloader-cta {
+    gap: 10px;
+  }
+
+  .viking-preloader-explore {
+    width: 100%;
+    max-width: none;
   }
 }
