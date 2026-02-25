@@ -8,19 +8,19 @@ type ThemeToggleProps = {
 
 export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const { theme, toggleTheme, isReady } = useTheme();
-  const isEntering = theme === 'default';
+  const isVikingMode = theme === 'viking';
 
-  const label = isEntering ? 'Enter Viking mode' : 'Return to minimal mode';
+  const label = isVikingMode ? 'Switch to Clean Mode' : 'Switch to Viking Mode';
 
   return (
     <button
       type="button"
-      className={`theme-toggle ${compact ? 'is-compact' : ''} ${isEntering ? 'is-enter' : 'is-active'}`.trim()}
+      className={`theme-toggle ${compact ? 'is-compact' : ''} ${isVikingMode ? 'is-active' : 'is-enter'}`.trim()}
       onClick={toggleTheme}
       aria-label={label}
       disabled={!isReady}
     >
-      <span>{isEntering ? 'Enter Viking Mode' : 'Viking Mode Active'}</span>
+      <span>{isVikingMode ? 'Viking Mode' : 'Clean Mode'}</span>
     </button>
   );
 }
