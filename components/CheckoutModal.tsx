@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
 const defaultForm = {
-  name: 'Birthday Receiver',
-  address: '44 Northern Light Avenue, Reykjavik',
-  email: 'birthday-guest@example.com'
+  name: 'Viktor Veuh',
+  address: '01-029 Warszawa',
+  email: 'viktorveuh@gmail.com'
 };
 
 function Confetti() {

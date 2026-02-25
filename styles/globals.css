@@ -164,6 +164,11 @@ a {
   display: none;
 }
 
+/* Never show mobile menu toggle unless a mobile/touch layout explicitly enables it */
+.mobile-nav-toggle {
+  display: none !important;
+}
+
 body.is-mobile-nav-open {
   overflow: hidden;
 }
@@ -2996,8 +3001,8 @@ html[data-theme='viking'] .cart-button span {
   }
 }
 
-/* Compact header mode: keep a stable header size and move nav into drawer sooner */
-@media (max-width: 1200px) {
+/* Compact header mode: keep a stable header size and move nav into drawer on touch/mobile only */
+@media (max-width: 1200px) and (hover: none) and (pointer: coarse) {
   .page-shell.experience-shell.immersive {
     width: min(1180px, 92vw);
   }
@@ -3039,7 +3044,7 @@ html[data-theme='viking'] .cart-button span {
   }
 
   .mobile-nav-toggle {
-    display: inline-flex;
+    display: inline-flex !important;
     min-height: 36px;
     width: 100%;
     padding-inline: 12px;
