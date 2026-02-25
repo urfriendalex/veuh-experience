@@ -20,7 +20,7 @@ export function ThemeToggle({ compact = false }: ThemeToggleProps) {
       aria-label={label}
       disabled={!isReady}
     >
-      <span>{isVikingMode ? 'Viking Mode' : 'Clean Mode'}</span>
+      <span>{isVikingMode ? 'Clean Mode' : 'Viking Mode'}</span>
     </button>
   );
 }
